@@ -56,6 +56,7 @@
         .header-subtitle {
             color: #64748b;
             margin-bottom: 15px;
+            font-size: 0.9em;
         }
 
         .stats-grid {
@@ -280,7 +281,7 @@
             background: white;
             padding: 10px;
             border-radius: 8px;
-            font-size: 0.9em;
+            font-size: 0.85em;
             position: relative;
         }
 
@@ -308,6 +309,17 @@
         .date-text {
             font-size: 0.85em;
             color: #64748b;
+        }
+
+        .date-type {
+            font-size: 0.75em;
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 4px;
+            padding: 3px 6px;
+            background: #ede9fe;
+            border-radius: 4px;
+            display: inline-block;
         }
 
         .topic-actions {
@@ -414,6 +426,43 @@
             animation: slideIn 0.3s ease-out;
         }
 
+        .schedule-info {
+            background: #ede9fe;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .schedule-info h3 {
+            color: #5b21b6;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .schedule-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .schedule-item {
+            background: white;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 0.8em;
+        }
+
+        .schedule-item-day {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .schedule-item-type {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
         @media (max-width: 600px) {
             .stats-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -421,6 +470,10 @@
             }
 
             .dates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .schedule-list {
                 grid-template-columns: 1fr;
             }
         }
@@ -453,7 +506,7 @@
         <!-- Header -->
         <div class="header">
             <h1>🦷 DUS Tekrar Sistemi</h1>
-            <p class="header-subtitle">Spaced Repetition Enes Appas </p>
+            <p class="header-subtitle">1-3-7-21-45-90 Gün Aralıklı Tekrar</p>
 
             <div class="stats-grid">
                 <div class="stat-card">
@@ -491,6 +544,37 @@
         <div class="card" id="addSection" style="display: none;">
             <h2>➕ Yeni Konu Ekle</h2>
             
+            <!-- Tekrar Sistemi Bilgisi -->
+            <div class="schedule-info">
+                <h3>📅 Tekrar Programı (6 Aşama)</h3>
+                <div class="schedule-list">
+                    <div class="schedule-item">
+                        <span class="schedule-item-day">1. Gün:</span>
+                        <span class="schedule-item-type">Hızlı Tekrar + Soru</span>
+                    </div>
+                    <div class="schedule-item">
+                        <span class="schedule-item-day">3. Gün:</span>
+                        <span class="schedule-item-type">Sadece Soru</span>
+                    </div>
+                    <div class="schedule-item">
+                        <span class="schedule-item-day">7. Gün:</span>
+                        <span class="schedule-item-type">Soru + Yanlış Tekrarı</span>
+                    </div>
+                    <div class="schedule-item">
+                        <span class="schedule-item-day">21. Gün:</span>
+                        <span class="schedule-item-type">Karma Soru</span>
+                    </div>
+                    <div class="schedule-item">
+                        <span class="schedule-item-day">45. Gün:</span>
+                        <span class="schedule-item-type">Karma + Yanlış Tekrarı</span>
+                    </div>
+                    <div class="schedule-item">
+                        <span class="schedule-item-day">90. Gün:</span>
+                        <span class="schedule-item-type">Final Tekrarı</span>
+                    </div>
+                </div>
+            </div>
+
             <form id="topicForm">
                 <div class="form-group">
                     <label>📚 Ders</label>
@@ -524,7 +608,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">
-                    📥 Ekle ve Takvime Kaydet
+                    📥 Ekle ve Takvime Kaydet (6 Tekrar)
                 </button>
             </form>
         </div>
@@ -601,7 +685,15 @@
     <script>
         const APP = {
             topics: [],
-            SCHEDULE: [1, 3, 7, 30]
+            // Yeni tekrar programı: 1-3-7-21-45-90 gün
+            SCHEDULE: [
+                { day: 1, type: 'Hızlı Tekrar + Soru', icon: '📖', color: '#3b82f6' },
+                { day: 3, type: 'Sadece Soru', icon: '❓', color: '#f59e0b' },
+                { day: 7, type: 'Soru + Yanlış Tekrarı', icon: '🔄', color: '#ef4444' },
+                { day: 21, type: 'Karma Soru', icon: '🎲', color: '#8b5cf6' },
+                { day: 45, type: 'Karma + Yanlış Tekrarı', icon: '🔀', color: '#ec4899' },
+                { day: 90, type: 'Final Tekrarı', icon: '🏆', color: '#10b981' }
+            ]
         };
 
         const CATEGORIES = {
@@ -675,13 +767,18 @@
             topic.repetitions.forEach(rep => {
                 if (!rep.completed) {
                     const d = new Date(rep.date);
+                    const scheduleInfo = APP.SCHEDULE.find(s => s.day === rep.day);
+                    
                     ics += 'BEGIN:VEVENT\r\n';
                     ics += `UID:${topic.id}-${rep.day}@dustekrar.com\r\n`;
                     ics += `DTSTAMP:${toICSDate(new Date())}\r\n`;
                     ics += `DTSTART:${toICSDate(d)}\r\n`;
                     ics += `DTEND:${toICSDate(addDays(d, 0))}\r\n`;
-                    ics += `SUMMARY:${CATEGORIES[topic.category]} - ${topic.name} (${rep.day}. gün)\r\n`;
-                    ics += `DESCRIPTION:🦷 DUS Tekrar - ${rep.day}. Gün\\n📚 ${CATEGORIES[topic.category]}\\n📖 ${topic.name}${topic.notes ? `\\n📝 ${topic.notes}` : ''}\r\n`;
+                    ics += `SUMMARY:${scheduleInfo.icon} ${CATEGORIES[topic.category]} - ${topic.name} (${rep.day}. gün)\r\n`;
+                    ics += `DESCRIPTION:🦷 DUS Tekrar\\n\\n📅 ${rep.day}. Gün Tekrarı\\n📋 ${scheduleInfo.type}\\n\\n📚 ${CATEGORIES[topic.category]}\\n📖 ${topic.name}${topic.notes ? `\\n📝 ${topic.notes}` : ''}\\n\\n━━━━━━━━━━━━━━\\nTüm Tekrarlar:\\n${topic.repetitions.map(r => {
+                        const info = APP.SCHEDULE.find(s => s.day === r.day);
+                        return `${info.icon} ${r.day}. gün: ${info.type}`;
+                    }).join('\\n')}\r\n`;
                     ics += 'BEGIN:VALARM\r\nTRIGGER:-PT2H\r\nACTION:DISPLAY\r\nEND:VALARM\r\n';
                     ics += 'END:VEVENT\r\n';
                 }
@@ -698,7 +795,7 @@
             link.href = URL.createObjectURL(blob);
             link.download = `${topic.name.replace(/\W/g, '_')}.ics`;
             link.click();
-            showToast('📥 Takvim dosyası indirildi!');
+            showToast('📥 Takvim dosyası indirildi! (6 etkinlik)');
         }
 
         function createTopic(name, category, notes) {
@@ -709,9 +806,12 @@
                 category,
                 notes,
                 createdAt: now.toISOString(),
-                repetitions: APP.SCHEDULE.map(days => ({
-                    day: days,
-                    date: addDays(now, days).toISOString(),
+                repetitions: APP.SCHEDULE.map(schedule => ({
+                    day: schedule.day,
+                    type: schedule.type,
+                    icon: schedule.icon,
+                    color: schedule.color,
+                    date: addDays(now, schedule.day).toISOString(),
                     completed: false
                 }))
             };
@@ -864,7 +964,8 @@
 
             APP.topics.forEach(topic => {
                 const completedCount = topic.repetitions.filter(r => r.completed).length;
-                const progress = Math.round((completedCount / topic.repetitions.length) * 100);
+                const totalCount = topic.repetitions.length;
+                const progress = Math.round((completedCount / totalCount) * 100);
 
                 const card = document.createElement('div');
                 card.className = 'topic-card';
@@ -878,13 +979,13 @@
                         <div class="progress-bar" style="width: ${progress}%"></div>
                     </div>
                     <div class="progress-text">
-                        ${progress}% - ${completedCount}/4 tekrar tamamlandı
+                        ${progress}% - ${completedCount}/${totalCount} tekrar tamamlandı
                     </div>
 
                     <div class="dates-grid">
                         ${topic.repetitions.map((rep, idx) => {
                             let statusClass = 'pending';
-                            let statusIcon = '⏳';
+                            let statusIcon = rep.icon || '⏳';
                             let statusText = '';
 
                             if (rep.completed) {
@@ -909,6 +1010,7 @@
                                 <div class="date-item ${statusClass}">
                                     <div class="date-day">${statusIcon} ${rep.day}. Gün</div>
                                     <div class="date-text">${formatDateShort(rep.date)}</div>
+                                    <div class="date-type" style="background: ${rep.color}15; color: ${rep.color};">${rep.type}</div>
                                     <div class="date-text" style="font-weight: 600; margin-top: 3px;">${statusText}</div>
                                     ${!rep.completed ? `
                                         <button class="btn btn-small btn-complete" onclick="completeRepetition(${topic.id}, ${idx})" style="width: 100%; margin-top: 8px;">
@@ -946,7 +1048,8 @@
 
             APP.topics.forEach(topic => {
                 const completedCount = topic.repetitions.filter(r => r.completed).length;
-                const progress = Math.round((completedCount / topic.repetitions.length) * 100);
+                const totalCount = topic.repetitions.length;
+                const progress = Math.round((completedCount / totalCount) * 100);
                 const nextRep = topic.repetitions.find(r => !r.completed);
 
                 const card = document.createElement('div');
@@ -962,12 +1065,12 @@
                     <div class="progress-container">
                         <div class="progress-bar" style="width: ${progress}%"></div>
                     </div>
-                    <div class="progress-text">${progress}% - ${completedCount}/4 tekrar</div>
+                    <div class="progress-text">${progress}% - ${completedCount}/${totalCount} tekrar</div>
 
                     <div class="dates-grid">
                         ${topic.repetitions.map((rep, idx) => {
                             let statusClass = 'pending';
-                            let statusIcon = '⏳';
+                            let statusIcon = rep.icon || '⏳';
 
                             if (rep.completed) {
                                 statusClass = 'completed';
@@ -983,6 +1086,7 @@
                                 <div class="date-item ${statusClass}">
                                     <div class="date-day">${statusIcon} ${rep.day}. Gün</div>
                                     <div class="date-text">${formatDateShort(rep.date)}</div>
+                                    <div class="date-type" style="background: ${rep.color}15; color: ${rep.color};">${rep.type}</div>
                                 </div>
                             `;
                         }).join('')}
@@ -991,7 +1095,7 @@
                     <div class="topic-actions">
                         ${nextRep ? `
                             <button class="btn btn-small btn-complete" onclick="completeRepetition(${topic.id}, ${topic.repetitions.indexOf(nextRep)})">
-                                ✓ Sonraki Tekrarı Tamamla
+                                ✓ ${nextRep.day}. Gün Tamamla
                             </button>
                         ` : ''}
                         <button class="btn btn-small btn-primary" onclick="downloadICS(APP.topics.find(t => t.id === ${topic.id}))">
@@ -1032,8 +1136,9 @@
 
         function manualBackup() {
             const data = {
-                version: '1.0',
+                version: '2.0',
                 date: new Date().toISOString(),
+                schedule: '1-3-7-21-45-90',
                 topics: APP.topics
             };
             
