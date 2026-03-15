@@ -11,13 +11,10 @@
     
     <title>🦷 DUS Tekrar Sistemi</title>
     
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🦷</text></svg>">
     
-    <!-- PWA Manifest -->
     <link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22DUS%20Tekrar%20Sistemi%22%2C%22short_name%22%3A%22DUS%20Tekrar%22%2C%22description%22%3A%22Di%C5%9F%20Hekimli%C4%9Fi%20Uzmanl%C4%B1k%20S%C4%B1nav%C4%B1%20Tekrar%20Sistemi%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23667eea%22%2C%22theme_color%22%3A%22%23667eea%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20512%20512%27%3E%3Crect%20fill%3D%27%23667eea%27%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%2780%27%2F%3E%3Ctext%20x%3D%27256%27%20y%3D%27380%27%20text-anchor%3D%27middle%27%20font-size%3D%27350%27%3E%F0%9F%A6%B7%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
     
-    <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23667eea' width='180' height='180' rx='40'/><text x='90' y='140' text-anchor='middle' font-size='120'>🦷</text></svg>">
     
     <style>
@@ -56,26 +53,16 @@
             margin-bottom: 5px;
         }
 
-        .data-status {
-            background: #d1fae5;
-            border: 2px solid #10b981;
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 15px;
-            color: #065f46;
-            font-size: 0.9em;
-        }
-
-        .data-status strong {
-            display: block;
-            margin-bottom: 5px;
+        .header-subtitle {
+            color: #64748b;
+            margin-bottom: 15px;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-top: 15px;
+            margin-bottom: 12px;
         }
 
         .stat-card {
@@ -96,6 +83,19 @@
             font-size: 0.75em;
             color: #64748b;
             font-weight: 600;
+        }
+
+        .data-status {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #166534;
+            font-size: 0.8em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .card {
@@ -400,7 +400,6 @@
             font-size: 1.5em;
         }
 
-        /* Install prompt */
         .install-prompt {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -426,7 +425,6 @@
             }
         }
 
-        /* iOS Specific */
         @supports (-webkit-touch-callout: none) {
             body {
                 padding-bottom: env(safe-area-inset-bottom, 80px);
@@ -444,9 +442,7 @@
                     <strong style="display: block;">Ana Ekrana Ekle</strong>
                     <small>Uygulama gibi kullanın!</small>
                 </div>
-                <button onclick="closeInstallPrompt()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">
-                    ✕
-                </button>
+                <button onclick="closeInstallPrompt()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">✕</button>
             </div>
             <div style="font-size: 0.9em; line-height: 1.6;">
                 📱 Chrome: Menü (⋮) → "Ana ekrana ekle"<br>
@@ -457,12 +453,7 @@
         <!-- Header -->
         <div class="header">
             <h1>🦷 DUS Tekrar Sistemi</h1>
-            <p style="color: #64748b;">Aralıklı Tekrar ile Kalıcı Öğrenme</p>
-            
-            <div class="data-status">
-                <strong>💾 Veri Durumu</strong>
-                <div id="dataStatus">Yükleniyor...</div>
-            </div>
+            <p class="header-subtitle">Spaced Repetition Enes Appas </p>
 
             <div class="stats-grid">
                 <div class="stat-card">
@@ -477,6 +468,11 @@
                     <div class="stat-number" id="totalCategories">0</div>
                     <div class="stat-label">Ders</div>
                 </div>
+            </div>
+
+            <div class="data-status">
+                <span>💾</span>
+                <span id="dataStatus">Yükleniyor...</span>
             </div>
         </div>
 
@@ -548,19 +544,19 @@
                 
                 <div style="margin-bottom: 15px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span style="font-weight: 600; color: #1e293b;">Toplam Tekrar Sayısı</span>
+                        <span style="font-weight: 600; color: #1e293b;">Toplam Tekrar</span>
                         <span style="font-weight: 700; color: #667eea;" id="totalRepetitions">0</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span style="font-weight: 600; color: #1e293b;">Tamamlanan Tekrar</span>
+                        <span style="font-weight: 600; color: #1e293b;">Tamamlanan</span>
                         <span style="font-weight: 700; color: #10b981;" id="completedRepetitions">0</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span style="font-weight: 600; color: #1e293b;">Bekleyen Tekrar</span>
+                        <span style="font-weight: 600; color: #1e293b;">Bekleyen</span>
                         <span style="font-weight: 700; color: #f59e0b;" id="pendingRepetitions">0</span>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                        <span style="font-weight: 600; color: #1e293b;">Geçmiş Tekrar</span>
+                        <span style="font-weight: 600; color: #1e293b;">Gecikmiş</span>
                         <span style="font-weight: 700; color: #ef4444;" id="overdueRepetitions">0</span>
                     </div>
                 </div>
@@ -625,7 +621,6 @@
             'periodontoloji': '🦷 Periodontoloji'
         };
 
-        // Tarih Fonksiyonları
         function addDays(date, days) {
             const result = new Date(date);
             result.setDate(result.getDate() + days);
@@ -673,7 +668,6 @@
             return new Date(date).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         }
 
-        // ICS Oluştur
         function createICS(topic) {
             let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//DUS Tekrar//TR\r\nCALSCALE:GREGORIAN\r\n';
             ics += `X-WR-CALNAME:${CATEGORIES[topic.category]}\r\n`;
@@ -707,7 +701,6 @@
             showToast('📥 Takvim dosyası indirildi!');
         }
 
-        // Konu Oluştur
         function createTopic(name, category, notes) {
             const now = new Date();
             return {
@@ -724,7 +717,6 @@
             };
         }
 
-        // Veri Yönetimi
         function saveData() {
             localStorage.setItem('dusDis', JSON.stringify(APP.topics));
             localStorage.setItem('dusDis_lastSave', Date.now());
@@ -740,7 +732,6 @@
             checkBackupReminder();
         }
 
-        // İstatistikleri Güncelle
         function updateAllStats() {
             updateDataStatus();
             updateGeneralStats();
@@ -751,14 +742,10 @@
         function updateDataStatus() {
             const lastSave = localStorage.getItem('dusDis_lastSave');
             
-            if (lastSave) {
+            if (APP.topics.length > 0 && lastSave) {
                 const days = Math.floor((Date.now() - parseInt(lastSave)) / (1000 * 60 * 60 * 24));
-                const lastDate = new Date(parseInt(lastSave));
-                
-                document.getElementById('dataStatus').innerHTML = 
-                    `✅ ${APP.topics.length} konu güvenle saklanıyor<br>` +
-                    `Son kayıt: ${formatDate(lastDate)}<br>` +
-                    `${days === 0 ? 'Bugün güncellendi' : days + ' gün önce güncellendi'}`;
+                document.getElementById('dataStatus').textContent = 
+                    `${APP.topics.length} konu kayıtlı • ${days === 0 ? 'Bugün' : days + ' gün önce'} güncellendi`;
             } else {
                 document.getElementById('dataStatus').textContent = 'Henüz konu eklenmedi';
             }
@@ -937,7 +924,6 @@
             });
         }
 
-        // Tekrarı Tamamla
         function completeRepetition(topicId, repIndex) {
             const topic = APP.topics.find(t => t.id === topicId);
             if (topic) {
@@ -948,7 +934,6 @@
             }
         }
 
-        // Konuları Render Et
         function renderTopics() {
             const list = document.getElementById('topicsList');
             
@@ -1021,7 +1006,6 @@
             });
         }
 
-        // Konu Sil
         function deleteTopic(topicId) {
             if (confirm('Bu konuyu silmek istediğinizden emin misiniz?')) {
                 APP.topics = APP.topics.filter(t => t.id !== topicId);
@@ -1031,7 +1015,6 @@
             }
         }
 
-        // Yedekleme
         function checkBackupReminder() {
             const lastBackup = localStorage.getItem('dusDis_lastBackup');
             const weekMs = 7 * 24 * 60 * 60 * 1000;
@@ -1065,7 +1048,6 @@
             showToast('💾 Yedek indirildi!');
         }
 
-        // Install Prompt
         function closeInstallPrompt() {
             document.getElementById('installPrompt').classList.remove('show');
             localStorage.setItem('installPromptClosed', 'true');
@@ -1082,13 +1064,11 @@
             }
         }
 
-        // Render
         function render() {
             renderTopics();
             updateAllStats();
         }
 
-        // Toast
         function showToast(msg) {
             const toast = document.createElement('div');
             toast.className = 'toast';
@@ -1097,7 +1077,6 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // Form Submit
         document.getElementById('topicForm').addEventListener('submit', (e) => {
             e.preventDefault();
             
@@ -1118,7 +1097,6 @@
             }
         });
 
-        // Navigasyon
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -1132,7 +1110,6 @@
             });
         });
 
-        // Başlangıç
         loadData();
         render();
         document.getElementById('addSection').style.display = 'block';
